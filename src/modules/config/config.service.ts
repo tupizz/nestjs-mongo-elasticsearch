@@ -1,6 +1,6 @@
 import { parse } from "dotenv";
-import * as joi from "@hapi/joi";
-import * as fs from "fs";
+import joi from "@hapi/joi";
+import fs from "fs";
 
 /**
  * Key-value mapping

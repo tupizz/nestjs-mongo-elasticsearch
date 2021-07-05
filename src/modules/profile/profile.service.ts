@@ -1,5 +1,5 @@
-import * as crypto from "crypto";
-import * as gravatar from "gravatar";
+import crypto from "crypto";
+import gravatar from "gravatar";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import {

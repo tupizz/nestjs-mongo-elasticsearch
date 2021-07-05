@@ -1,5 +1,5 @@
-import * as winston from "winston";
-import * as rotateFile from "winston-daily-rotate-file";
+import winston from "winston";
+import rotateFile from "winston-daily-rotate-file";
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";

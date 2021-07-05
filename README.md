@@ -12,7 +12,7 @@
 <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
 <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
 </p>
-    
+
 ### 📚 Description
 
 This boilerplate is made to quickly prototype backend applications. It comes with database, logging, security, and authentication features out of the box.
@@ -23,7 +23,7 @@ This boilerplate is made to quickly prototype backend applications. It comes wit
 
 #### Non Docker
 
-- Please make sure to either have MongoDB Community installed locally or a subscription to Mongo on the cloud by configuration a cluster in [atlas](https://www.mongodb.com/cloud/atlas). 
+- Please make sure to either have MongoDB Community installed locally or a subscription to Mongo on the cloud by configuration a cluster in [atlas](https://www.mongodb.com/cloud/atlas).
 
 #### Docker 🐳
 
@@ -50,7 +50,7 @@ This boilerplate is made to quickly prototype backend applications. It comes wit
 
 ```bash
 # creates and loads the docker container with required configuration
-$ docker-compose up -d 
+$ docker-compose up -d
 ```
 - The following command will set up and run the docker project for quick use. Then the web application, and MongoDB will be exposed to http://localhost:9000 and http://localhost:27017 respectively.
 
@@ -58,7 +58,7 @@ $ docker-compose up -d
 
 By default, the application comes with a config module that can read in every environment variable from the `.env` file.
 
-**APP_ENV** - the application environment to execute as, either in development or production. Determines the type of logging options to utilize. Options: `dev` or `prod`. 
+**APP_ENV** - the application environment to execute as, either in development or production. Determines the type of logging options to utilize. Options: `dev` or `prod`.
 
 **APP_URL** - the base URL for the application. Made mainly to showcase the power of `ConfigService` and can be removed as it doesn't serve any other purpose
 
@@ -72,7 +72,7 @@ By default, the application comes with a config module that can read in every en
 
 ### 🏗 Choosing a Web Framework
 
-This boilerplate comes with [Fastify](https://github.com/fastify/fastify) out of the box as it offers [performance benefits](https://github.com/nestjs/nest/blob/master/benchmarks/all_output.txt) over Express. But this can be changed to use [Express](https://expressjs.com/) framework instead of Fastify. 
+This boilerplate comes with [Fastify](https://github.com/fastify/fastify) out of the box as it offers [performance benefits](https://github.com/nestjs/nest/blob/master/benchmarks/all_output.txt) over Express. But this can be changed to use [Express](https://expressjs.com/) framework instead of Fastify.
 
 For interchangeability:
 
@@ -86,8 +86,8 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import * as headers from 'fastify-helmet';
-import * as fastifyRateLimiter from 'fastify-rate-limit';
+import headers from 'fastify-helmet';
+import fastifyRateLimiter from 'fastify-rate-limit';
 const app = await NestFactory.create<NestFastifyApplication>(
   AppModule,
   new FastifyAdapter({ logger: console }),
@@ -103,8 +103,8 @@ Express:
 
 ```ts
 // for express:
-import * as headers from 'helmet';
-import * as rateLimiter from 'express-rate-limit';
+import headers from 'helmet';
+import rateLimiter from 'express-rate-limit';
 const app = await NestFactory.create(AppModule, {
   logger: console,
 });
@@ -117,7 +117,7 @@ app.use(
 );
 ```
 
-**Note**: The boilerplate comes with production dependencies for both Express and Fastify to support moving between two. But this is going to leave it bloated especially when only **one web framework is used at a time**. Thus, **it is recommended that when deploying to production, unused dependencies are purged.** 
+**Note**: The boilerplate comes with production dependencies for both Express and Fastify to support moving between two. But this is going to leave it bloated especially when only **one web framework is used at a time**. Thus, **it is recommended that when deploying to production, unused dependencies are purged.**
 
 If you choose to **use Fastify**, this command will **purge all of the Express dependencies**:
 

@@ -1,11 +1,14 @@
-import { Controller, Get, Inject } from "@nestjs/common";
+import { Controller, Get, Inject, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ProductService } from "./product.service";
-import { readFileSync } from "fs";
+import { createReadStream } from "fs";
 import { resolve } from "path";
 import { Logger } from "winston";
-import { Product } from "./product.model";
 
+import StreamArray from "stream-json/streamers/StreamArray";
+import Batch from "stream-json/utils/Batch";
+import { insertProductTransformer } from "./utils/insert-product-transformer";
+import { FastifyReply } from "fastify";
 @ApiTags("profile")
 @Controller("api/products")
 export class ProductController {
@@ -16,7 +19,11 @@ export class ProductController {
   constructor(
     private readonly productService: ProductService,
     @Inject("winston") private readonly logger: Logger,
-  ) {}
+  ) {
+    this.logger.defaultMeta = {
+      service: "ProductController",
+    };
+  }
 
   // http://localhost:9000/api/products/test
   @Get("test")
@@ -44,15 +51,20 @@ export class ProductController {
 
   // http://localhost:9000/api/products/upload-products
   @Get("upload-products")
-  async uploadProducts() {
-    const productsBuffer = readFileSync(resolve(__dirname, "products.json"));
-    const products: Product[] = JSON.parse(
-      productsBuffer.toString("utf-8"),
-    ) as Product[];
-    this.logger.info(JSON.stringify(products[0], null, 2));
-    await this.productService.bulkInsert(products);
-    return {
-      status: "success",
-    };
+  uploadProducts(@Res() response: FastifyReply) {
+    console.time("bulk-upload");
+
+    this.logger.info("starting the bulk upload, not using stream");
+
+    const pipe = createReadStream(
+      resolve(__dirname, "..", "..", "..", "products.json"), { encoding: "utf-8" })
+      .pipe(StreamArray.withParser())
+      .pipe(new Batch({ batchSize: 2000 }))
+      .pipe(insertProductTransformer(this.productService, this.logger));
+
+    pipe.on("end", () => {
+      console.timeEnd("bulk-upload");
+      response.status(200).send({ status: "UPLOADED" })
+    });
   }
 }

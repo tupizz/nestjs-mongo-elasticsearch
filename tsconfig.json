@@ -8,9 +8,12 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
+    "target": "es2017",
     "sourceMap": true,
+    "incremental": true,
+    "resolveJsonModule": true,
     "outDir": "./dist",
+    "esModuleInterop": true, // https://blog.atomist.com/typescript-imports/
     "baseUrl": "./src"
   },
   "include": [
