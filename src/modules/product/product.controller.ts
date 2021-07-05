@@ -1,5 +1,5 @@
 // tslint:disable: no-console
-import { Controller, Get, Inject, Res } from "@nestjs/common";
+import { Controller, Get, Inject, Query, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ProductService } from "./product.service";
 import { createReadStream } from "fs";
@@ -11,6 +11,7 @@ import Batch from "stream-json/utils/Batch";
 import { insertProductTransformer } from "./utils/insert-product-transformer";
 import { FastifyReply } from "fastify";
 import { bulkUpdateElasticsearchTransformer } from "./utils/bulk-update-elasticsearch-transformer";
+import { elasticSearchApi } from "./api/elasticsearch-api";
 @ApiTags("profile")
 @Controller("api/products")
 export class ProductController {
@@ -58,15 +59,44 @@ export class ProductController {
 
     this.logger.info("starting the sync products, using stream");
 
+    // Delete all index data
+    await elasticSearchApi
+      .delete("/playground")
+      .then(this.logger.info)
+      .catch(this.logger.error);
+
     const pipe = this.productService
       .findCursor()
       .pipe(new Batch({ batchSize: 2000 }))
-      .pipe(bulkUpdateElasticsearchTransformer(this.logger))
+      .pipe(bulkUpdateElasticsearchTransformer(this.logger));
 
     pipe.on("end", () => {
       console.timeEnd("sync-products");
       response.status(200).send({ status: "UPLOADED" });
     });
+  }
+
+  // http://localhost:9000/api/products/search?t=
+  @Get("search")
+  async searchProductsByTerm(@Query("t") searchTerm: string) {
+    const results = await elasticSearchApi
+      .get("/playground/products/_search", {
+        data: {
+          query: {
+            multi_match: {
+              query: searchTerm,
+              fields: ["name", "description"],
+            },
+          },
+        },
+      })
+      .catch(this.logger.error);
+
+    return results.data?.hits?.hits.map((hit) => ({
+      _id: hit._id,
+      name: hit._source.name,
+      description: hit._source.description,
+    }));
   }
 
   // http://localhost:9000/api/products/upload-products

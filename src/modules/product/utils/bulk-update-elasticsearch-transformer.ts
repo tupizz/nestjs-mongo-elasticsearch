@@ -1,14 +1,7 @@
 import { Logger } from "winston";
 import { Transform } from "stream";
 import { Product } from "../product.model";
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "http://localhost:9200",
-  headers: {
-    "Content-Type": "application/x-ndjson",
-  },
-});
+import { elasticSearchApi } from "../api/elasticsearch-api";
 
 export const bulkUpdateElasticsearchTransformer = (logger: Logger) =>
   new Transform({
@@ -28,12 +21,12 @@ export const bulkUpdateElasticsearchTransformer = (logger: Logger) =>
           description: product.description,
           manufacturer: product.manufacturer,
         };
-        return `\n{ "index":{} }\n${JSON.stringify(searchableProduct)}`;
+        return `\n{ "index":{ "_id": "${product._id}" } }\n${JSON.stringify(searchableProduct)}`;
       });
 
 
       try {
-        await api.post("/playground/products/_bulk", data.concat("\n").join(""));
+        await elasticSearchApi.post("/playground/products/_bulk", data.concat("\n").join(""));
       } catch (error) {
         console.log(error);
       }
