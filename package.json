@@ -30,6 +30,7 @@
     "@nestjs/platform-fastify": "7.6.18",
     "@nestjs/swagger": "4.8.2",
     "@nestjs/typeorm": "7.1.5",
+    "axios": "^0.21.1",
     "class-transformer": "0.4.0",
     "class-validator": "0.13.1",
     "crypto": "1.0.1",
@@ -57,6 +58,7 @@
   "devDependencies": {
     "@compodoc/compodoc": "1.1.11",
     "@nestjs/testing": "7.6.18",
+    "@types/axios": "^0.14.0",
     "@types/dotenv": "8.2.0",
     "@types/express": "4.17.12",
     "@types/gravatar": "1.8.2",

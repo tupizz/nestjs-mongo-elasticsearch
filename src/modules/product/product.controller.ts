@@ -1,3 +1,4 @@
+// tslint:disable: no-console
 import { Controller, Get, Inject, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ProductService } from "./product.service";
@@ -9,6 +10,7 @@ import StreamArray from "stream-json/streamers/StreamArray";
 import Batch from "stream-json/utils/Batch";
 import { insertProductTransformer } from "./utils/insert-product-transformer";
 import { FastifyReply } from "fastify";
+import { bulkUpdateElasticsearchTransformer } from "./utils/bulk-update-elasticsearch-transformer";
 @ApiTags("profile")
 @Controller("api/products")
 export class ProductController {
@@ -49,22 +51,42 @@ export class ProductController {
     });
   }
 
+  // http://localhost:9000/api/products/sync-products-es
+  @Get("sync-products-es")
+  async syncProductsES(@Res() response: FastifyReply) {
+    console.time("sync-products");
+
+    this.logger.info("starting the sync products, using stream");
+
+    const pipe = this.productService
+      .findCursor()
+      .pipe(new Batch({ batchSize: 2000 }))
+      .pipe(bulkUpdateElasticsearchTransformer(this.logger))
+
+    pipe.on("end", () => {
+      console.timeEnd("bulk-upload");
+      response.status(200).send({ status: "UPLOADED" });
+    });
+  }
+
   // http://localhost:9000/api/products/upload-products
   @Get("upload-products")
   uploadProducts(@Res() response: FastifyReply) {
     console.time("bulk-upload");
 
-    this.logger.info("starting the bulk upload, not using stream");
+    this.logger.info("starting the bulk upload, using stream");
 
     const pipe = createReadStream(
-      resolve(__dirname, "..", "..", "..", "products.json"), { encoding: "utf-8" })
+      resolve(__dirname, "..", "..", "..", "products.json"),
+      { encoding: "utf-8" },
+    )
       .pipe(StreamArray.withParser())
       .pipe(new Batch({ batchSize: 2000 }))
       .pipe(insertProductTransformer(this.productService, this.logger));
 
     pipe.on("end", () => {
       console.timeEnd("bulk-upload");
-      response.status(200).send({ status: "UPLOADED" })
+      response.status(200).send({ status: "UPLOADED" });
     });
   }
 }

@@ -13,6 +13,10 @@ export class ProductService {
     return this.productModel.create(product);
   }
 
+  findCursor() {
+    return this.productModel.find({}).cursor();
+  }
+
   bulkInsert(products: Product[]) {
     return this.productModel.insertMany(products);
   }

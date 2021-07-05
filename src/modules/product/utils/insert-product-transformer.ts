@@ -3,6 +3,11 @@ import { Transform } from "stream";
 import { Product } from "../product.model";
 import { ProductService } from "../product.service";
 
+type ChunkType = {
+  key: number;
+  value: Product;
+};
+
 export const insertProductTransformer = (
   productService: ProductService,
   logger: Logger,
@@ -14,11 +19,6 @@ export const insertProductTransformer = (
     async transform(chunks, encoding, callback) {
       logger.info("Pausing the stream for some transform");
       this.pause();
-
-      type ChunkType = {
-        key: number;
-        value: Product;
-      };
 
       const products = (chunks as ChunkType[]).map((item) => item.value);
       const insertedItems = await productService.bulkInsert(products);
