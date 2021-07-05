@@ -1,0 +1,226 @@
+{
+	"info": {
+		"_postman_id": "57c50136-6310-4f32-916d-24896952363c",
+		"name": "😎 Elasticsearch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create document on index and type",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Branco\",\n    \"likes\": [ \"exercicios\", \"academia\", \"esporte\", \"tecnologia\"],\n    \"city\": \"São José do rio preto\",\n    \"state\": \"SP\",  \n    \"degree\": \"Ciência da Computação\",\n    \"contry\": \"Brazil\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9200/index-study/people",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"index-study",
+						"people"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update replicas",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"index\": {\n        \"number_of_replicas\": 0\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9200/index-study/_settings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"index-study",
+						"_settings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting a count of documents",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9200/index-study/people/_count",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"index-study",
+						"people",
+						"_count"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all indexes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9200/_aliases",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"_aliases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create document on index and type Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\" : \"Duracell - C Batteries (4-Pack)\",\n    \"type\" : \"HardGood\",\n    \"category\" : [ \n        {\n            \"name\" : \"Connected Home & Housewares\"\n        }, \n        {\n            \"name\" : \"Housewares\"\n        }, \n        {\n            \"name\" : \"Household Batteries\"\n        }, \n        {\n            \"name\" : \"Alkaline Batteries\"\n        }\n    ],\n    \"description\" : \"Compatible with select electronic devices; C size; DURALOCK Power Preserve technology; 4-pack\",\n    \"manufacturer\" : \"Duracell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9200/playground/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"playground",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting document and filtering",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9200/playground/products/_search?q=Cell",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"playground",
+						"products",
+						"_search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "Cell"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Searching documents",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"query\": {\n    \"multi_match\": { \n        \"query\": \"nintendo\",\n        \"fields\" : [\"name\", \"description\"]\n    }\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9200/playground/products/_search",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"playground",
+						"products",
+						"_search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Updating a single document",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"doc\": {\n        \"nome\": \"Tadeu Tupinambá\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9200/index-study/people/TSG9aHoB_wW61CPyiUqm",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"index-study",
+						"people",
+						"TSG9aHoB_wW61CPyiUqm"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
