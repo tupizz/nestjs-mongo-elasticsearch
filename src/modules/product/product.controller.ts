@@ -64,7 +64,7 @@ export class ProductController {
       .pipe(bulkUpdateElasticsearchTransformer(this.logger))
 
     pipe.on("end", () => {
-      console.timeEnd("bulk-upload");
+      console.timeEnd("sync-products");
       response.status(200).send({ status: "UPLOADED" });
     });
   }

@@ -4,7 +4,7 @@
         {
             "type": "node",
             "request": "attach",
-            "name": "Debug: ATAT service in Docker",
+            "name": "Debug: NestJs service in Docker",
             "remoteRoot": "/usr/src/app",
             "localRoot": "${workspaceFolder}",
             "protocol": "inspector",
